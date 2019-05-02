@@ -1,0 +1,1 @@
+export 'anki_repository.dart';
