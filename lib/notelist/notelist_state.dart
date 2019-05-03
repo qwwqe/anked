@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:anked/model/model.dart';
 
 abstract class NoteListState extends Equatable {
   NoteListState([List props = const []]) : super(props);
@@ -11,7 +12,7 @@ class NoteListLoading extends NoteListState {
 }
 
 class NoteListLoaded extends NoteListState {
-  final List<Map<String, dynamic>> noteList;
+  final List<Note> noteList;
 
   NoteListLoaded({@required this.noteList}) : assert(noteList != null), super([noteList]);
 

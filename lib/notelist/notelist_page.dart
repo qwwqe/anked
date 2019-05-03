@@ -41,6 +41,12 @@ class _NoteListPageState extends State<NoteListPage> {
     super.dispose();
   }
 
+  // TODO: check if notelist will get updated properly without this
+  //@override
+  //void didUpdateWidget(Widget oldWidget) {
+  //  _noteListBloc.dispatch(GetNoteList());
+  //}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +66,7 @@ class _NoteListPageState extends State<NoteListPage> {
                 itemCount: state.noteList.length,
                 itemBuilder: (BuildContext, int index) => Card( // TODO: use Row()
                   child: ListTile(
-                    title: Text(state.noteList[index]['note']['fields'][0]['value']),
+                    title: Text(state.noteList[index].note['fields'][0]['value']),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'dart:core';
 import 'dart:convert';
+import 'package:anked/model/model.dart';
 
 class NoteProvider {
   Database _database;
@@ -13,7 +14,7 @@ class NoteProvider {
       _database = await openDatabase(dbPath, version: 1,
           onCreate: (Database db, int version) async {
             await db.execute(
-                'CREATE TABLE notes (id INTEGER PRIMARY KEY, note TEXT);'
+                'CREATE TABLE notes (id INTEGER PRIMARY KEY, modelId TEXT, deckId TEXT, note TEXT);'
             );
           }
       );
@@ -24,39 +25,45 @@ class NoteProvider {
     return _database;
   }
 
-  Future<Map<String, dynamic>> getNote(int id) async {
+  Future<Note> getNote(int id) async {
     var db = await getDatabase();
     List<Map<String, dynamic>> rows = await db.query(
         'notes',
-        columns: ['id', 'note'],
+        columns: ['id', 'modelId', 'deckId', 'note'],
         where: 'id = ?',
         whereArgs: [id],
     );
 
     if (rows.length > 0) {
-      return {
-        "id": rows[0]['id'],
-        "note": jsonDecode(rows[0]['note']),
-      };
+      return Note(
+        id: rows[0]['id'],
+        modelId: rows[0]['modelId'],
+        deckId: rows[0]['deckId'],
+        note: jsonDecode(rows[0]['note']),
+      );
     }
 
     return null;
   }
 
-  Future<List<Map<String, dynamic>>> getAllNotes() async {
+  Future<List<Note>> getAllNotes() async {
     var db = await getDatabase();
     var rows = await db.rawQuery(
       'SELECT * FROM notes'
     );
 
-    List<Map<String, dynamic>> notes = [];
+    print("FFFF");
+    List<Note> notes = [];
     for(int i = 0; i < rows.length; i++) {
-      var m = {
-        "id": rows[i]['id'],
-        "note": jsonDecode(rows[i]['note']),
-      };
+      var m = Note(
+        id: rows[i]['id'],
+        modelId: rows[i]['modelId'],
+        deckId: rows[i]['deckId'],
+        note: jsonDecode(rows[i]['note']),
+      );
       notes.add(m);
     }
+    print("GGGG");
 
     return notes;
   }
@@ -69,7 +76,7 @@ class NoteProvider {
       jsonEncode(<String, dynamic> {"fields":[{"name":"Chinese","value":"宮闕"}]}),
     ];
     for (int i = 0; i < notes.length; i++) {
-      db.insert("notes", <String, dynamic>{'note':notes[i]});
+      db.insert("notes", <String, dynamic>{"deckId":"234", "modelId":"42","note":notes[i]});
     }
   }
 }

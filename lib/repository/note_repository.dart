@@ -1,4 +1,5 @@
 import 'package:anked/provider/provider.dart';
+import 'package:anked/model/model.dart';
 
 class NoteRepository {
   NoteProvider noteProvider;
@@ -7,7 +8,7 @@ class NoteRepository {
     noteProvider = NoteProvider();
   }
 
-  Future<List<Map<String, dynamic>>> getNoteList() async {
+  Future<List<Note>> getNoteList() async {
     return await noteProvider.getAllNotes();
   }
 

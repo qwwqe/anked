@@ -42,6 +42,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   void initState() {
+    //_noteRepository.testPopulate();
     super.initState();
   }
 
