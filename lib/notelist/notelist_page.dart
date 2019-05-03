@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/repository/repository.dart';
 import 'package:anked/notelist/notelist.dart';
 import 'package:anked/common/common.dart';
+import 'package:anked/editnote/editnote.dart';
 import 'package:bloc/bloc.dart';
 
 class NoteListPage extends StatefulWidget {
@@ -60,6 +61,16 @@ class _NoteListPageState extends State<NoteListPage> {
                 itemBuilder: (BuildContext, int index) => Card( // TODO: use Row()
                   child: ListTile(
                     title: Text(state.noteList[index]['note']['fields'][0]['value']),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditNotePage(
+                            noteRepository: _noteRepository,
+                            ankiRepository: _ankiRepository,
+                            note: state.noteList[index],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               );
@@ -76,7 +87,15 @@ class _NoteListPageState extends State<NoteListPage> {
           }
         ),
         floatingActionButton: FloatingActionButton(
-            onPressed: () => {},
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditNotePage(
+                    noteRepository: _noteRepository,
+                    ankiRepository: _ankiRepository,
+                ),
+              ),
+            ),
             child: Icon(Icons.add),
         ),
     );
