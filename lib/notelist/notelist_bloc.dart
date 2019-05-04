@@ -20,7 +20,7 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
   NoteListState get initialState => NoteListLoading();
 
   @override
-  Stream<NoteListState> mapEventToState(NoteListState currentState, NoteListEvent event) async* {
+  Stream<NoteListState> mapEventToState(NoteListEvent event) async* {
     if(event is GetNoteList) {
       yield NoteListLoading();
 

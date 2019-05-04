@@ -19,7 +19,7 @@ class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
   EditNoteFormState get initialState => DeckChanged(deck: noteContext.deck);
 
   @override
-  Stream<EditNoteFormState> mapEventToState(EditNoteFormState currentState, EditNoteFormEvent event) async* {
+  Stream<EditNoteFormState> mapEventToState(EditNoteFormEvent event) async* {
     if (event is ModifyDeck) {
       noteContext.deck = event.deck;
       yield DeckChanged(deck: event.deck);

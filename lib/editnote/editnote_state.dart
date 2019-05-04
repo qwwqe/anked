@@ -40,10 +40,10 @@ class SendingNote extends EditNoteState {
   String toString() => "SendingNote";
 }
 
-class FailedSendingNote extends EditNoteState {
+class SendingNoteFailed extends EditNoteState {
   final String error;
 
-  FailedSendingNote({@required this.error}) : assert(error != null), super([error]);
+  SendingNoteFailed({@required this.error}) : assert(error != null), super([error]);
 
   @override
   String toString() => "FailedSendingNote";

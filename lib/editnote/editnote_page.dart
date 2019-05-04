@@ -7,6 +7,7 @@ import 'package:anked/common/common.dart';
 import 'package:bloc/bloc.dart';
 import 'package:anked/model/model.dart';
 import 'package:anked/editnoteform/editnoteform.dart';
+import 'package:meta/meta.dart';
 
 class EditNotePage extends StatefulWidget {
   final AnkiRepository ankiRepository;
@@ -62,31 +63,63 @@ class _EditNotePageState extends State<EditNotePage> {
       appBar: AppBar(
         title: isNewNote ? Text("New note") : Text("Edit note"),
       ),
-      body: BlocBuilder(
+      body: BlocListener(
         bloc: editNoteBloc,
-        builder: (BuildContext context, EditNoteState state) {
-          if (state is LoadingAnkiInfo) {
-            return LoadingIndicator();
+        listener: (BuildContext context, EditNoteState state) {
+          if (state is FailedAnkiInfo) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Failed to retrieve deck data from Anki."),
+            ));
           }
 
-          if (state is FailedAnkiInfo) {
-            return Center(
-              child: Icon(Icons.error),
-            );
+          if (state is SavedNote) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Note saved."),
+            ));
+          }
+
+          if (state is SavingNoteFailed) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Saving note failed."),
+            ));
+          }
+
+          if (state is SendingNoteFailed) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Sending note to Anki failed."),
+            ));
           }
 
           if (state is SentNote) {
-            // TODO: delete note and go back
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("Sent note to Anki."),
+            ));
+
+            Navigator.pop(context);
           }
+        },
+        child: BlocBuilder(
+            bloc: editNoteBloc,
+            builder: (BuildContext context, EditNoteState state) {
+              if (state is LoadingAnkiInfo) {
+                return LoadingIndicator();
+              }
 
-          // All states should ultimately display the EditNoteForm
+              if (state is FailedAnkiInfo) {
+                return Center(
+                  child: Icon(Icons.error),
+                );
+              }
 
-          return EditNoteForm(
-            noteRepository: _noteRepository,
-            noteContext: noteContext,
-            editable: !(state is SendingNote || state is SavingNote),
-          );
-        }
+              // All states should ultimately display the EditNoteForm
+
+              return EditNoteForm(
+                noteRepository: _noteRepository,
+                noteContext: noteContext,
+                editable: !(state is SendingNote || state is SavingNote),
+              );
+            }
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => editNoteBloc.dispatch(SaveNote()),

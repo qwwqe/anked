@@ -20,7 +20,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
   EditNoteState get initialState => LoadingAnkiInfo();
 
   @override
-  Stream<EditNoteState> mapEventToState(EditNoteState currentState, EditNoteEvent event) async* {
+  Stream<EditNoteState> mapEventToState(EditNoteEvent event) async* {
     if (event is LoadAnkiInfo) {
       yield LoadingAnkiInfo();
 
@@ -107,7 +107,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
         // TODO: send note to anki
 
       } catch (error) {
-        yield FailedSendingNote(error: error);
+        yield SendingNoteFailed(error: error);
       }
     }
   }
