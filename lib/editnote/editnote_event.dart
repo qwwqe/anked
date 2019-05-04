@@ -10,9 +10,9 @@ class LoadAnkiInfo extends EditNoteEvent {
   String toString() => "LoadAnkiInfo";
 }
 
-class SaveNoteInfo extends EditNoteEvent {
+class SaveNote extends EditNoteEvent {
   @override
-  String toString() => "SaveNoteInfo";
+  String toString() => "SaveNote";
 }
 
 class SendNote extends EditNoteEvent {

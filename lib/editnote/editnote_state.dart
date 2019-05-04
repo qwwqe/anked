@@ -6,14 +6,12 @@ abstract class EditNoteState extends Equatable {
   EditNoteState([List props = const []]) : super(props);
 }
 
+// The following three states do not correspond to a Form widget
+// (ie, should not be rendered as EditNoteForm)
+
 class LoadingAnkiInfo extends EditNoteState {
   @override
   String toString() => "LoadingAnkiInfo";
-}
-
-class LoadedAnkiInfo extends EditNoteState {
-  @override
-  String toString() => "LoadedAnkiInfo";
 }
 
 class FailedAnkiInfo extends EditNoteState {
@@ -23,6 +21,18 @@ class FailedAnkiInfo extends EditNoteState {
 
   @override
   String toString() => "FailedAnkiInfo";
+}
+
+class SentNote extends EditNoteState {
+  @override
+  String toString() => "SentNote";
+}
+
+// All classes below do correspond to a Form widget
+
+class LoadedAnkiInfo extends EditNoteState {
+  @override
+  String toString() => "LoadedAnkiInfo";
 }
 
 class SendingNote extends EditNoteState {
@@ -39,7 +49,21 @@ class FailedSendingNote extends EditNoteState {
   String toString() => "FailedSendingNote";
 }
 
-class SentNote extends EditNoteState {
+class SavingNote extends EditNoteState {
   @override
-  String toString() => "SentNote";
+  String toString() => "SavingNote";
+}
+
+class SavedNote extends EditNoteState {
+  @override
+  String toString() => "SavedNote";
+}
+
+class SavingNoteFailed extends EditNoteState {
+  final String error;
+
+  SavingNoteFailed({@required this.error}) : assert (error != null), super([error]);
+
+  @override
+  String toString() => "SavingNoteFailed";
 }

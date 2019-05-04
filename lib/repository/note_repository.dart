@@ -12,6 +12,10 @@ class NoteRepository {
     return await noteProvider.getAllNotes();
   }
 
+  Future<Note> saveNote(Note note) async {
+    return await noteProvider.saveNote(note);
+  }
+
   Future<void> testPopulate() async {
     await noteProvider.testPopulate();
   }

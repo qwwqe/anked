@@ -11,15 +11,6 @@ class NoteListLoading extends NoteListState {
   String toString() => "NoteListLoading";
 }
 
-class NoteListLoaded extends NoteListState {
-  final List<Note> noteList;
-
-  NoteListLoaded({@required this.noteList}) : assert(noteList != null), super([noteList]);
-
-  @override
-  String toString() => "NoteListLoaded";
-}
-
 class NoteListFailure extends NoteListState {
   final String error;
 
@@ -27,4 +18,23 @@ class NoteListFailure extends NoteListState {
 
   @override
   String toString() => "NoteListFailure: ${this.error}";
+}
+
+// All states below are rendered with the same Widget
+
+class NoteListLoaded extends NoteListState {
+  @override
+  String toString() => "NoteListLoaded";
+}
+
+class NoteListRefreshed extends NoteListState {
+  final Note note;
+
+  NoteListRefreshed({this.note}) : super([note]);
+
+  //@override
+  //bool operator == (o) => false;
+
+  @override
+  String toString() => "NoteListRefreshed";
 }

@@ -3,14 +3,18 @@ import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:anked/notelist/notelist.dart';
 import 'package:anked/repository/repository.dart';
+import 'package:anked/model/model.dart';
 
 class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
   final AnkiRepository ankiRepository;
   final NoteRepository noteRepository;
+  final List<Note> noteList;
 
-  NoteListBloc({@required this.ankiRepository, @required this.noteRepository}) :
+  NoteListBloc({@required this.ankiRepository, @required this.noteRepository,
+      @required this.noteList}) :
       assert(ankiRepository != null),
-      assert(noteRepository != null);
+      assert(noteRepository != null),
+      assert(noteList != null);
 
   @override
   NoteListState get initialState => NoteListLoading();
@@ -21,12 +25,17 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
       yield NoteListLoading();
 
       try {
-        final noteList = await noteRepository.getNoteList();
-        print(noteList.toString());
-        yield NoteListLoaded(noteList: noteList);
+        noteList.clear();
+        noteList.addAll(await noteRepository.getNoteList());
+        yield NoteListLoaded();
       } catch (error) {
         yield NoteListFailure(error: error.toString());
       }
+    }
+
+    if(event is RefreshNoteList) {
+
+      yield NoteListRefreshed();
     }
   }
 }

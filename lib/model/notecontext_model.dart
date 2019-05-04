@@ -13,6 +13,22 @@ class NoteContext {
 
   Note note;
 
+  void renderNote() {
+    if (note == null) {
+      note = Note();
+    }
+    note.deckId = deck == null ? null : deck.id;
+    note.modelId = _model == null ? null : _model.id;
+    note.note = Map<String, dynamic>();
+    note.note['fields'] = [];
+    for(int i = 0; i < _model.fields.length; i++) {
+      note.note['fields'].add({
+        "name": _model.fields[i],
+        "value": _controllers[i].text,
+      });
+    }
+  }
+
   List<AnkiDeck> get decks => _decks;
   set decks(List<AnkiDeck> ds) {
     _decks = ds;

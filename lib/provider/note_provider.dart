@@ -68,6 +68,47 @@ class NoteProvider {
     return notes;
   }
 
+  Future<Note> saveNote(Note note) async {
+    var db = await getDatabase();
+    int count;
+
+    print(note.note);
+
+    if (note.id != null) {
+      count = await db.update(
+          "notes",
+          {
+            "deckId": note.deckId,
+            "modelId": note.modelId,
+            "note": jsonEncode(note.note),
+          },
+          where: "id = ?",
+          whereArgs: [note.id],
+      );
+    } else {
+      count = await db.insert(
+        "notes",
+        {
+          "deckId": note.deckId,
+          "modelId": note.modelId,
+          "note": jsonEncode(note.note),
+        },
+      );
+
+    }
+
+    if (count < 1) {
+      throw("Error updating or inserting note into database.");
+    }
+
+    return note;
+  }
+
+  Future<void> deleteNote(Note note) async {
+    var db = await getDatabase();
+    await db.delete("notes", where: "id = ?", whereArgs: [note.id]);
+  }
+
   Future<void> testPopulate() async {
     var db = await getDatabase();
     var notes = [
@@ -76,7 +117,7 @@ class NoteProvider {
       jsonEncode(<String, dynamic> {"fields":[{"name":"Chinese","value":"宮闕"}]}),
     ];
     for (int i = 0; i < notes.length; i++) {
-      db.insert("notes", <String, dynamic>{"deckId":"234", "modelId":"42","note":notes[i]});
+      await db.insert("notes", <String, dynamic>{"deckId":"234", "modelId":"42","note":notes[i]});
     }
   }
 }

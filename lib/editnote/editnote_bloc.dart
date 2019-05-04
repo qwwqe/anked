@@ -83,8 +83,20 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
       }
     }
 
-    if (event is SaveNoteInfo) {
-      // TODO: stub
+    if (event is SaveNote) {
+      yield SavingNote();
+      try {
+        print("Saving note");
+        noteContext.renderNote();
+        Note note = await noteRepository.saveNote(noteContext.note);
+        if (noteContext.note.id == null) {
+          noteContext.note.id = note.id;
+        }
+        yield SavedNote();
+      } catch (error) {
+        print(error.toString());
+        yield SavingNoteFailed(error: error.toString());
+      }
     }
 
     if (event is SendNote) {

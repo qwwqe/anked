@@ -5,6 +5,7 @@ import 'package:anked/notelist/notelist.dart';
 import 'package:anked/common/common.dart';
 import 'package:anked/editnote/editnote.dart';
 import 'package:bloc/bloc.dart';
+import 'package:anked/model/model.dart';
 
 class NoteListPage extends StatefulWidget {
   final AnkiRepository ankiRepository;
@@ -21,15 +22,18 @@ class NoteListPage extends StatefulWidget {
 
 class _NoteListPageState extends State<NoteListPage> {
   NoteListBloc _noteListBloc;
+  List<Note> noteList;
 
   AnkiRepository get _ankiRepository => widget.ankiRepository;
   NoteRepository get _noteRepository => widget.noteRepository;
 
   @override
   void initState() {
+    noteList = List<Note>();
     _noteListBloc = NoteListBloc(
         ankiRepository: _ankiRepository,
         noteRepository: _noteRepository,
+        noteList: noteList,
     );
     _noteListBloc.dispatch(GetNoteList());
     super.initState();
@@ -60,48 +64,51 @@ class _NoteListPageState extends State<NoteListPage> {
               return LoadingIndicator();
             }
 
-            if (state is NoteListLoaded) {
-
-              return ListView.builder(
-                itemCount: state.noteList.length,
-                itemBuilder: (BuildContext, int index) => Card( // TODO: use Row()
-                  child: ListTile(
-                    title: Text(state.noteList[index].note['fields'][0]['value']),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditNotePage(
-                            noteRepository: _noteRepository,
-                            ankiRepository: _ankiRepository,
-                            note: state.noteList[index],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }
-
             if (state is NoteListFailure) {
-                Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text("Failed loading notes.")));
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text("Failed loading notes.")));
 
               return Center(
                 child: Icon(Icons.error),
               );
             }
+
+            // All states below are rendered with the same Widget
+
+            return ListView.builder(
+                itemCount: noteList.length,
+                itemBuilder: (BuildContext, int index) => Card( // TODO: use Row()
+                  child: ListTile(
+                    title: Text(noteList[index].note['fields'][0]['value']),
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditNotePage(
+                            noteRepository: _noteRepository,
+                            ankiRepository: _ankiRepository,
+                            note: noteList[index],
+                          ),
+                        ),
+                      ).then((r) => _noteListBloc.dispatch(GetNoteList()));
+                    },
+                  ),
+                ),
+            );
           }
         ),
         floatingActionButton: FloatingActionButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditNotePage(
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditNotePage(
                     noteRepository: _noteRepository,
                     ankiRepository: _ankiRepository,
+                  ),
                 ),
-              ),
-            ),
+              ).then((r) => _noteListBloc.dispatch(GetNoteList()));
+            },
             child: Icon(Icons.add),
         ),
     );

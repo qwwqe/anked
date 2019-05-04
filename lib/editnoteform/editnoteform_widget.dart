@@ -7,8 +7,9 @@ import 'package:anked/editnoteform/editnoteform.dart';
 class EditNoteForm extends StatefulWidget {
   final NoteRepository noteRepository;
   final NoteContext noteContext;
+  bool editable = true;
 
-  EditNoteForm({@required this.noteRepository, this.noteContext}) :
+  EditNoteForm({@required this.noteRepository, @required this.noteContext, this.editable}) :
       assert(noteRepository != null),
       assert(noteContext != null);
 
@@ -21,6 +22,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
 
   NoteRepository get _noteRepository => widget.noteRepository;
   NoteContext get _noteContext => widget.noteContext;
+  bool get _editable => widget.editable;
 
   @override
   void initState() {
@@ -47,7 +49,9 @@ class _EditNoteFormState extends State<EditNoteForm> {
           title: Text("Deck"),
           trailing: DropdownButton<AnkiDeck>(
             value: _noteContext.deck,
-            onChanged: (deck) => _editNoteFormBloc.dispatch(ModifyDeck(deck: deck)),
+            onChanged: _editable
+                ? (deck) => _editNoteFormBloc.dispatch(ModifyDeck(deck: deck))
+                : null,
             items: _noteContext.decks.map((deck) {
               return DropdownMenuItem<AnkiDeck>(
                 value: deck,
@@ -60,7 +64,9 @@ class _EditNoteFormState extends State<EditNoteForm> {
           title: Text("Note Type"),
           trailing: DropdownButton<AnkiNoteModel>(
             value: _noteContext.model,
-            onChanged: (noteModel) => _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel)),
+            onChanged: _editable
+                ? (noteModel) => _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel))
+                : null,
             items: _noteContext.models.map((noteModel) {
               return DropdownMenuItem<AnkiNoteModel>(
                 value: noteModel,
@@ -72,17 +78,17 @@ class _EditNoteFormState extends State<EditNoteForm> {
         Divider(),
       ];
 
+      // TODO: look into using Slivers instead
       for(int i = 0; i < _noteContext.model.fields.length && i < _noteContext.controllers.length; i++) {
-        formChildren.add(TextFormField(
+        formChildren.add(TextField(
+          enabled: _editable,
           decoration: InputDecoration(labelText: _noteContext.model.fields[i]),
           controller: _noteContext.controllers[i],
         ));
       }
 
-      return Form(
-        child: Column(
+      return ListView(
           children: formChildren,
-        ),
       );
     }
   );

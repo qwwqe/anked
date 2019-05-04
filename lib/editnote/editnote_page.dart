@@ -79,16 +79,17 @@ class _EditNotePageState extends State<EditNotePage> {
             // TODO: delete note and go back
           }
 
-          if (state is LoadedAnkiInfo) {
-            return EditNoteForm(
-              noteRepository: _noteRepository,
-              noteContext: noteContext,
-            );
-          }
+          // All states should ultimately display the EditNoteForm
+
+          return EditNoteForm(
+            noteRepository: _noteRepository,
+            noteContext: noteContext,
+            editable: !(state is SendingNote || state is SavingNote),
+          );
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => editNoteBloc.dispatch(SaveNoteInfo()),
+        onPressed: () => editNoteBloc.dispatch(SaveNote()),
         child: Icon(Icons.save),
       ),
     );
