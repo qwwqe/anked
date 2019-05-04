@@ -74,26 +74,36 @@ class _NoteListPageState extends State<NoteListPage> {
             }
 
             // All states below are rendered with the same Widget
+            // TODO: failure states
 
+            if (state is NoteDeleted) {
+              _noteListBloc.dispatch(GetNoteList());
+            }
+
+            // TODO: figure out long press drop down menu...
             return ListView.builder(
                 itemCount: noteList.length,
-                itemBuilder: (BuildContext, int index) => Card( // TODO: use Row()
-                  child: ListTile(
-                    title: Text(noteList[index].note['fields'][0]['value']),
-                    onTap: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditNotePage(
-                            noteRepository: _noteRepository,
-                            ankiRepository: _ankiRepository,
-                            note: noteList[index],
+                itemBuilder: (BuildContext context, int index) => Card(
+                    child: ListTile(
+                      title: Text(noteList[index].note['fields'][0]['value']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () => _noteListBloc.dispatch(DeleteNote(note: noteList[index])),
+                      ),
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditNotePage(
+                              noteRepository: _noteRepository,
+                              ankiRepository: _ankiRepository,
+                              note: noteList[index],
+                            ),
                           ),
-                        ),
-                      ).then((r) => _noteListBloc.dispatch(GetNoteList()));
-                    },
-                  ),
-                ),
+                        ).then((r) => _noteListBloc.dispatch(GetNoteList()));
+                      },
+                    ),
+              ),
             );
           }
         ),

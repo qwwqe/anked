@@ -19,3 +19,9 @@ class RefreshNoteList extends NoteListEvent {
   @override
   String toString() => "RefreshNoteList";
 }
+
+class DeleteNote extends NoteListEvent {
+  final Note note;
+
+  DeleteNote({@required this.note}) : assert(note != null), super([note]);
+}

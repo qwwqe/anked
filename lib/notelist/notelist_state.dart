@@ -38,3 +38,22 @@ class NoteListRefreshed extends NoteListState {
   @override
   String toString() => "NoteListRefreshed";
 }
+
+class DeletingNote extends NoteListState {
+  @override
+  String toString() => "DeletingNote";
+}
+
+class NoteDeleted extends NoteListState {
+  @override
+  String toString() => "DeletedNote";
+}
+
+class NoteDeletionFailure extends NoteListState {
+  final String error;
+
+  NoteDeletionFailure({@required this.error}) : super([error]);
+
+  @override
+  String toString() => "NoteDelitionFailure";
+}

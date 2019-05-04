@@ -16,6 +16,10 @@ class NoteRepository {
     return await noteProvider.saveNote(note);
   }
 
+  Future<void> deleteNote(Note note) async {
+    await noteProvider.deleteNote(note);
+  }
+
   Future<void> testPopulate() async {
     await noteProvider.testPopulate();
   }
