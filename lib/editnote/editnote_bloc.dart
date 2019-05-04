@@ -104,6 +104,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
 
       try {
         yield SendingNote();
+        throw("Foo");
         // TODO: send note to anki
 
       } catch (error) {

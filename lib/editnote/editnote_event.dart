@@ -16,7 +16,6 @@ class SaveNote extends EditNoteEvent {
 }
 
 class SendNote extends EditNoteEvent {
-  final Map<String, dynamic> note;
-
-  SendNote({@required this.note}) : assert(note != null);
+  @override
+  String toString() => "SendNote";
 }

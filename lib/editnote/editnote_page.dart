@@ -62,6 +62,12 @@ class _EditNotePageState extends State<EditNotePage> {
     return Scaffold(
       appBar: AppBar(
         title: isNewNote ? Text("New note") : Text("Edit note"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () => editNoteBloc.dispatch(SendNote()),
+          )
+        ],
       ),
       body: BlocListener(
         bloc: editNoteBloc,
