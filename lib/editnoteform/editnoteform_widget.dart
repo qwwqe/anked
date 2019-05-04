@@ -80,10 +80,13 @@ class _EditNoteFormState extends State<EditNoteForm> {
 
       // TODO: look into using Slivers instead
       for(int i = 0; i < _noteContext.model.fields.length && i < _noteContext.controllers.length; i++) {
-        formChildren.add(TextField(
-          enabled: _editable,
-          decoration: InputDecoration(labelText: _noteContext.model.fields[i]),
-          controller: _noteContext.controllers[i],
+        formChildren.add(Padding(
+          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 0),
+          child: TextField(
+            enabled: _editable,
+            decoration: InputDecoration(labelText: _noteContext.model.fields[i]),
+            controller: _noteContext.controllers[i],
+          ),
         ));
       }
 
