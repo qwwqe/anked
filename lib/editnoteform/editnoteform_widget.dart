@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/repository/repository.dart';
 import 'package:anked/model/model.dart';
 import 'package:anked/editnoteform/editnoteform.dart';
+import 'package:anked/settings/settings.dart';
 
 class EditNoteForm extends StatefulWidget {
   final NoteRepository noteRepository;
@@ -50,7 +51,10 @@ class _EditNoteFormState extends State<EditNoteForm> {
           trailing: DropdownButton<AnkiDeck>(
             value: _noteContext.deck,
             onChanged: _editable
-                ? (deck) => _editNoteFormBloc.dispatch(ModifyDeck(deck: deck))
+                ? (deck) {
+                    _editNoteFormBloc.dispatch(ModifyDeck(deck: deck));
+                    BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deck.id));
+                  }
                 : null,
             items: _noteContext.decks.map((deck) {
               return DropdownMenuItem<AnkiDeck>(
@@ -65,7 +69,10 @@ class _EditNoteFormState extends State<EditNoteForm> {
           trailing: DropdownButton<AnkiNoteModel>(
             value: _noteContext.model,
             onChanged: _editable
-                ? (noteModel) => _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel))
+                ? (noteModel) {
+                    _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel));
+                    BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredNoteModel(noteModelId: noteModel.id));
+                  }
                 : null,
             items: _noteContext.models.map((noteModel) {
               return DropdownMenuItem<AnkiNoteModel>(

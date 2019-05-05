@@ -5,6 +5,7 @@ import 'package:anked/common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/notelist/notelist.dart';
 import 'package:flutter/services.dart';
+import 'package:anked/settings/settings.dart';
 
 // TODO: CODE CLEANUP AND BUG FIXING
 // TODO: Add note filter on main page
@@ -46,18 +47,29 @@ class _MainAppState extends State<MainApp> {
   AnkiRepository get _ankiRepository => widget.ankiRepository;
   NoteRepository get _noteRepository => widget.noteRepository;
 
+  SettingsBloc _settingsBloc;
+
   @override
   void initState() {
     _ankiRepository.setMethodChannel(platform);
+    _settingsBloc = SettingsBloc();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _settingsBloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) => MaterialApp(
       title: "anked",
-      home: NoteListPage(
-          ankiRepository: _ankiRepository,
-          noteRepository: _noteRepository,
+      home: BlocProvider(
+          bloc: _settingsBloc,
+          child: NoteListPage(
+            ankiRepository: _ankiRepository,
+            noteRepository: _noteRepository,
+          ),
       ),
   );
 

@@ -6,6 +6,7 @@ import 'package:anked/common/common.dart';
 import 'package:anked/editnote/editnote.dart';
 import 'package:bloc/bloc.dart';
 import 'package:anked/model/model.dart';
+import 'package:anked/settings/settings.dart';
 
 class NoteListPage extends StatefulWidget {
   final AnkiRepository ankiRepository;
