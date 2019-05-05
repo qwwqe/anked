@@ -6,6 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/notelist/notelist.dart';
 import 'package:flutter/services.dart';
 
+// TODO: CODE CLEANUP AND BUG FIXING
+// TODO: Add note filter on main page
+// TODO: Add long-press delete menu on main page
+
 class PrintTransitionDelegate extends BlocDelegate {
   @override
   void onTransition(Transition transition) {
