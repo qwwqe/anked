@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:anked/common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/notelist/notelist.dart';
-
+import 'package:flutter/services.dart';
 
 class PrintTransitionDelegate extends BlocDelegate {
   @override
@@ -37,6 +37,8 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  //static const platform = const MethodChannel('com.bonzimybuddy.anked/anki');
+
   AnkiRepository get _ankiRepository => widget.ankiRepository;
   NoteRepository get _noteRepository => widget.noteRepository;
 
@@ -54,4 +56,5 @@ class _MainAppState extends State<MainApp> {
           noteRepository: _noteRepository,
       ),
   );
+
 }

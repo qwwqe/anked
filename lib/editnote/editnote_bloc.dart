@@ -28,11 +28,11 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
         // TODO: get real anki info
         noteContext.decks = [
           AnkiDeck(
-            id: "234",
-            name: "新一代中文",
+            id: "1525493682831",
+            name: "嶄新一代中文",
           ),
           AnkiDeck(
-            id: "425",
+            id: "1555322735260",
             name: "Python",
           ),
         ];
@@ -52,14 +52,14 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
 
         noteContext.models = [
           AnkiNoteModel(
-            id: "42",
-            name: "Chinese-English",
-            fields: ["Chinese", "Pronunciation", "English"],
+            id: "1525396147269",
+            name: "Cloze Definition",
+            fields: ["Text", "Word", "Pronunciation", "Definition", "Picture"],
           ),
           AnkiNoteModel(
-            id: "22",
+            id: "1554320620450",
             name: "Term",
-            fields: ["Term", "Definition"],
+            fields: ["Chinese", "Pronunciation", "English", "Example", "Example", "Example"],
           )
         ];
 

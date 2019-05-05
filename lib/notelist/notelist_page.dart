@@ -84,8 +84,10 @@ class _NoteListPageState extends State<NoteListPage> {
             return ListView.builder(
                 itemCount: noteList.length,
                 itemBuilder: (BuildContext context, int index) => Card(
+                    margin: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                     child: ListTile(
                       title: Text(noteList[index].note['fields'][0]['value']),
+                      //subtitle: Text(noteList[index].note['fields'][2]['value']), // TODO: check array bounds...
                       trailing: IconButton(
                         icon: Icon(Icons.clear),
                         onPressed: () => _noteListBloc.dispatch(DeleteNote(note: noteList[index])),
