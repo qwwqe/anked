@@ -90,9 +90,11 @@ class _NoteListPageState extends State<NoteListPage> {
                 // All states below are rendered with the same Widget
                 // TODO: failure states
 
-                //if (state is NoteDeleted) {
-                //  _noteListBloc.dispatch(GetNoteList()); // TODO: put this in a listener
-                //}
+                if (noteList.length == 0) {
+                  return Center(
+                    child: Text("You've synced all your cards to Anki!")
+                  );
+                }
 
                 // TODO: figure out long press drop down menu...
                 return ListView.builder(
