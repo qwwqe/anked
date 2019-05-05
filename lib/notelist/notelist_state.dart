@@ -57,3 +57,8 @@ class NoteDeletionFailure extends NoteListState {
   @override
   String toString() => "NoteDelitionFailure";
 }
+
+class ReturnedFromNoteSaved extends NoteListState {
+  @override
+  String toString() => "ReturnedFromNoteSaved";
+}

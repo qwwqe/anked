@@ -44,7 +44,11 @@ class AnkiProvider {
     return models;
   }
 
-  Future<int> saveNote(AnkiNote note) async {
-
+  Future<int> addNote(AnkiNote note) async {
+    return await _platform.invokeMethod('saveNote', {
+      "modelId": note.modelId,
+      "deckId": note.deckId,
+      "fieldString": note.fieldString,
+    });
   }
 }

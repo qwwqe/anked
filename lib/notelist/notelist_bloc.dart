@@ -47,5 +47,9 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
         yield NoteDeletionFailure(error: error.toString());
       }
     }
+
+    if(event is ReturnFromNoteSaved) {
+      yield ReturnedFromNoteSaved();
+    }
   }
 }

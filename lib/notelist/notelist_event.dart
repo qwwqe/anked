@@ -25,3 +25,8 @@ class DeleteNote extends NoteListEvent {
 
   DeleteNote({@required this.note}) : assert(note != null), super([note]);
 }
+
+class ReturnFromNoteSaved extends NoteListEvent {
+  @override
+  String toString() => "ReturnFromNoteSaved";
+}

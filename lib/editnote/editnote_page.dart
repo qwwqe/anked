@@ -97,11 +97,7 @@ class _EditNotePageState extends State<EditNotePage> {
           }
 
           if (state is SentNote) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text("Sent note to Anki."),
-            ));
-
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           }
         },
         child: BlocBuilder(

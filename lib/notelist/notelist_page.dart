@@ -57,33 +57,47 @@ class _NoteListPageState extends State<NoteListPage> {
         appBar: AppBar(
           title: Text("anked"),
         ),
-        body: BlocBuilder(
+        body: BlocListener(
           bloc: _noteListBloc,
-          builder: (BuildContext context, NoteListState state) {
-            if (state is NoteListLoading) {
-              return LoadingIndicator();
-            }
-
+          listener: (BuildContext context, NoteListState state) {
             if (state is NoteListFailure) {
               Scaffold.of(context)
                   .showSnackBar(SnackBar(content: Text("Failed loading notes.")));
-
-              return Center(
-                child: Icon(Icons.error),
-              );
             }
-
-            // All states below are rendered with the same Widget
-            // TODO: failure states
 
             if (state is NoteDeleted) {
-              _noteListBloc.dispatch(GetNoteList()); // TODO: put this in a listener
+              _noteListBloc.dispatch(GetNoteList());
             }
 
-            // TODO: figure out long press drop down menu...
-            return ListView.builder(
-                itemCount: noteList.length,
-                itemBuilder: (BuildContext context, int index) => Card(
+            if (state is ReturnedFromNoteSaved) {
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text("Note sent to Anki.")));
+            }
+          },
+          child: BlocBuilder(
+              bloc: _noteListBloc,
+              builder: (BuildContext context, NoteListState state) {
+                if (state is NoteListLoading) {
+                  return LoadingIndicator();
+                }
+
+                if (state is NoteListFailure) {
+                  return Center(
+                    child: Icon(Icons.error),
+                  );
+                }
+
+                // All states below are rendered with the same Widget
+                // TODO: failure states
+
+                //if (state is NoteDeleted) {
+                //  _noteListBloc.dispatch(GetNoteList()); // TODO: put this in a listener
+                //}
+
+                // TODO: figure out long press drop down menu...
+                return ListView.builder(
+                  itemCount: noteList.length,
+                  itemBuilder: (BuildContext context, int index) => Card(
                     margin: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                     child: ListTile(
                       title: Text(noteList[index].note['fields'][0]['value']),
@@ -102,12 +116,18 @@ class _NoteListPageState extends State<NoteListPage> {
                               note: noteList[index],
                             ),
                           ),
-                        ).then((r) => _noteListBloc.dispatch(GetNoteList()));
+                        ).then((r) {
+                          if(r) {
+                            _noteListBloc.dispatch(ReturnFromNoteSaved());
+                          }
+                          _noteListBloc.dispatch(GetNoteList());
+                        });
                       },
                     ),
-              ),
-            );
-          }
+                  ),
+                );
+              }
+          ),
         ),
         floatingActionButton: FloatingActionButton(
             onPressed: () async {
@@ -119,7 +139,12 @@ class _NoteListPageState extends State<NoteListPage> {
                     ankiRepository: _ankiRepository,
                   ),
                 ),
-              ).then((r) => _noteListBloc.dispatch(GetNoteList()));
+              )..then((r) {
+                if(r) {
+                  _noteListBloc.dispatch(ReturnFromNoteSaved());
+                }
+                _noteListBloc.dispatch(GetNoteList());
+              });
             },
             child: Icon(Icons.add),
         ),

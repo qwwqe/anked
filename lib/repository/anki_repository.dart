@@ -26,7 +26,7 @@ class AnkiRepository {
     return ankiInfo;
   }
 
-  Future<int> saveNote(AnkiNote note) async {
-    return await ankiProvider.saveNote(note);
+  Future<int> addNote(AnkiNote note) async {
+    return await ankiProvider.addNote(note);
   }
 }

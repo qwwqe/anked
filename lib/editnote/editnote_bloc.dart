@@ -109,10 +109,27 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
       yield SendingNote();
 
       try {
-        yield SendingNote();
-        throw("Foo");
-        // TODO: send note to anki
+        noteContext.renderNote();
+        var ankiNote = AnkiNote(
+          modelId: noteContext.note.modelId,
+          deckId: noteContext.note.deckId,
+        );
+        // TODO: these note models need cleaning up
+        var fields = List<String>();
+        noteContext.note.note['fields'].forEach((f) => fields.add(f['value']));
+        ankiNote.loadFieldStringFromList(fields);
 
+        print(fields);
+        print(ankiNote.fieldString);
+
+        int success = await ankiRepository.addNote(ankiNote);
+        if (success < 1) {
+          throw("Failed to save note");
+        }
+
+        await noteRepository.deleteNote(noteContext.note);
+
+        yield SentNote();
       } catch (error) {
         yield SendingNoteFailed(error: error);
       }
