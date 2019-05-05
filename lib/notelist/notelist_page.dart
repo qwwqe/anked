@@ -23,6 +23,7 @@ class NoteListPage extends StatefulWidget {
 class _NoteListPageState extends State<NoteListPage> {
   NoteListBloc _noteListBloc;
   List<Note> noteList;
+  List<Note> filteredNoteList;
 
   AnkiRepository get _ankiRepository => widget.ankiRepository;
   NoteRepository get _noteRepository => widget.noteRepository;
@@ -56,6 +57,7 @@ class _NoteListPageState extends State<NoteListPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text("anked"),
+
         ),
         body: BlocListener(
           bloc: _noteListBloc,
