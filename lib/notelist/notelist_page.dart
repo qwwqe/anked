@@ -77,7 +77,7 @@ class _NoteListPageState extends State<NoteListPage> {
             // TODO: failure states
 
             if (state is NoteDeleted) {
-              _noteListBloc.dispatch(GetNoteList());
+              _noteListBloc.dispatch(GetNoteList()); // TODO: put this in a listener
             }
 
             // TODO: figure out long press drop down menu...

@@ -37,14 +37,14 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  //static const platform = const MethodChannel('com.bonzimybuddy.anked/anki');
+  static const platform = const MethodChannel('com.bonzimybuddy.anked/anki');
 
   AnkiRepository get _ankiRepository => widget.ankiRepository;
   NoteRepository get _noteRepository => widget.noteRepository;
 
   @override
   void initState() {
-    //_noteRepository.testPopulate();
+    _ankiRepository.setMethodChannel(platform);
     super.initState();
   }
 

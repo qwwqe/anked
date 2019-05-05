@@ -16,4 +16,8 @@ class AnkiNoteModel {
   List<String> fields;
 
   AnkiNoteModel({this.id, this.name, this.fields});
+
+  void loadFieldsFromString(String s) {
+    fields = s.split('\u{1f}');
+  }
 }

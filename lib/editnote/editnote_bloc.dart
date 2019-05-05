@@ -25,7 +25,10 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
       yield LoadingAnkiInfo();
 
       try {
-        // TODO: get real anki info
+        AnkiInfo ankiInfo = await ankiRepository.getAnkiInfo();
+        noteContext.decks = ankiInfo.decks;
+        noteContext.models = ankiInfo.noteModels;
+        /*
         noteContext.decks = [
           AnkiDeck(
             id: "1525493682831",
@@ -36,6 +39,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
             name: "Python",
           ),
         ];
+        */
 
         if (noteContext.note != null) {
           for(int i = 0; i < noteContext.decks.length; i++) {
@@ -50,6 +54,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
           noteContext.deck = noteContext.decks[0];
         }
 
+        /*
         noteContext.models = [
           AnkiNoteModel(
             id: "1525396147269",
@@ -62,6 +67,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
             fields: ["Chinese", "Pronunciation", "English", "Example", "Example", "Example"],
           )
         ];
+        */
 
         if(noteContext.note != null) {
           for(int i = 0; i < noteContext.models.length; i++) {
