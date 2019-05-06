@@ -42,66 +42,101 @@ class _EditNoteFormState extends State<EditNoteForm> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocBuilder(
-    bloc: _editNoteFormBloc,
-    builder: (BuildContext context, EditNoteFormState state) {
-      var formChildren = <Widget>[
-        ListTile(
-          title: Text("Deck"),
-          trailing: DropdownButton<AnkiDeck>(
-            value: _noteContext.deck,
-            onChanged: _editable
-                ? (deck) {
-                    _editNoteFormBloc.dispatch(ModifyDeck(deck: deck));
-                    BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deck.id));
-                  }
-                : null,
-            items: _noteContext.decks.map((deck) {
-              return DropdownMenuItem<AnkiDeck>(
-                value: deck,
-                child: Text(deck.name),
-              );
-            }).toList(),
-          ),
-        ),
-        ListTile(
-          title: Text("Note Type"),
-          trailing: DropdownButton<AnkiNoteModel>(
-            value: _noteContext.model,
-            onChanged: _editable
-                ? (noteModel) {
-                    _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel));
-                    BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredNoteModel(noteModelId: noteModel.id));
-                  }
-                : null,
-            items: _noteContext.models.map((noteModel) {
-              return DropdownMenuItem<AnkiNoteModel>(
-                value: noteModel,
-                child: Text(noteModel.name),
-              );
-            }).toList(),
-          ),
-        ),
-        Divider(),
-      ];
+  Widget build(BuildContext context) => BlocListener(
+    bloc: BlocProvider.of<SettingsBloc>(context),
+    listener: (BuildContext context, SettingsState state) {
+      if (state is SettingsLoaded) {
+        AnkiDeck newDeck;
+        if(state.deckId != null) {
+          for (int i = 0; i < _noteContext.decks.length; i++) {
+            if (_noteContext.decks[i].id == state.deckId) {
+              newDeck = _noteContext.decks[i];
+              break;
+            }
+          }
+        }
 
-      // TODO: look into using Slivers instead
-      for(int i = 0; i < _noteContext.model.fields.length && i < _noteContext.controllers.length; i++) {
-        formChildren.add(Padding(
-          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 0),
-          child: TextField(
-            enabled: _editable,
-            decoration: InputDecoration(labelText: _noteContext.model.fields[i]),
-            controller: _noteContext.controllers[i],
-          ),
-        ));
+        if (newDeck != null) {
+          _editNoteFormBloc.dispatch(ModifyDeck(deck: newDeck));
+        }
+
+        AnkiNoteModel newNoteModel;
+        if(state.noteModelId != null) {
+          for (int i = 0; i < _noteContext.models.length; i++) {
+            if(_noteContext.models[i].id == state.noteModelId) {
+              newNoteModel = _noteContext.models[i];
+              break;
+            }
+          }
+        }
+
+        if (newNoteModel != null) {
+          _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: newNoteModel));
+        }
       }
+    },
+    child: BlocBuilder(
+      bloc: _editNoteFormBloc,
+      builder: (BuildContext context, EditNoteFormState state) {
+        var formChildren = <Widget>[
+          ListTile(
+            title: Text("Deck"),
+            trailing: DropdownButton<AnkiDeck>(
+              value: _noteContext.deck,
+              onChanged: _editable
+                  ? (deck) {
+                _editNoteFormBloc.dispatch(ModifyDeck(deck: deck));
+                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deck.id));
+              }
+                  : null,
+              items: _noteContext.decks.map((deck) {
+                return DropdownMenuItem<AnkiDeck>(
+                  value: deck,
+                  child: Text(deck.name),
+                );
+              }).toList(),
+            ),
+          ),
+          ListTile(
+            title: Text("Note Type"),
+            trailing: DropdownButton<AnkiNoteModel>(
+              value: _noteContext.model,
+              onChanged: _editable
+                  ? (noteModel) {
+                _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel));
+                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredNoteModel(noteModelId: noteModel.id));
+              }
+                  : null,
+              items: _noteContext.models.map((noteModel) {
+                return DropdownMenuItem<AnkiNoteModel>(
+                  value: noteModel,
+                  child: Text(noteModel.name),
+                );
+              }).toList(),
+            ),
+          ),
+          Divider(),
+        ];
 
-      return ListView(
+        // TODO: look into using Slivers instead
+        for(int i = 0; i < _noteContext.model.fields.length && i < _noteContext.controllers.length; i++) {
+          formChildren.add(Padding(
+            padding: EdgeInsets.symmetric(horizontal: 7, vertical: 0),
+            child: TextField(
+              enabled: _editable,
+              decoration: InputDecoration(labelText: _noteContext.model.fields[i]),
+              controller: _noteContext.controllers[i],
+            ),
+          ));
+        }
+
+        return ListView(
           children: formChildren,
-      );
-    }
+        );
+      }
+    ),
   );
+
 
 
 }

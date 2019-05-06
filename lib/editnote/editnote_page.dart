@@ -8,6 +8,7 @@ import 'package:bloc/bloc.dart';
 import 'package:anked/model/model.dart';
 import 'package:anked/editnoteform/editnoteform.dart';
 import 'package:meta/meta.dart';
+import 'package:anked/settings/settings.dart';
 
 class EditNotePage extends StatefulWidget {
   final AnkiRepository ankiRepository;
@@ -26,6 +27,7 @@ class EditNotePage extends StatefulWidget {
 class _EditNotePageState extends State<EditNotePage> {
   EditNoteBloc editNoteBloc;
   NoteContext noteContext;
+  SettingsBloc _settingsBloc;
 
   bool isNewNote;
   String deckName;
@@ -41,6 +43,12 @@ class _EditNotePageState extends State<EditNotePage> {
     noteContext = NoteContext();
     noteContext.note = _note;
 
+    _settingsBloc = SettingsBloc();
+    if (isNewNote) {
+      print("NEW NOTE");
+      _settingsBloc.dispatch(LoadSettings());
+    }
+
     editNoteBloc = EditNoteBloc(
       ankiRepository: _ankiRepository,
       noteRepository: _noteRepository,
@@ -53,6 +61,7 @@ class _EditNotePageState extends State<EditNotePage> {
   @override
   void dispose() {
     editNoteBloc.dispose();
+    _settingsBloc.dispose();
     noteContext.disposeControllers();
     super.dispose();
   }
@@ -115,10 +124,13 @@ class _EditNotePageState extends State<EditNotePage> {
 
               // All states should ultimately display the EditNoteForm
 
-              return EditNoteForm(
-                noteRepository: _noteRepository,
-                noteContext: noteContext,
-                editable: !(state is SendingNote || state is SavingNote),
+              return BlocProvider(
+                bloc: _settingsBloc,
+                child: EditNoteForm(
+                  noteRepository: _noteRepository,
+                  noteContext: noteContext,
+                  editable: !(state is SendingNote || state is SavingNote),
+                ),
               );
             }
         ),

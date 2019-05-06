@@ -122,9 +122,9 @@ class _NoteListPageState extends State<NoteListPage> {
                             ),
                           ),
                         ).then((r) {
-                          if(r) {
-                            _noteListBloc.dispatch(ReturnFromNoteSaved());
-                          }
+                          //if(r) {
+                          //  _noteListBloc.dispatch(ReturnFromNoteSaved());
+                          //}
                           _noteListBloc.dispatch(GetNoteList());
                         });
                       },
@@ -145,9 +145,9 @@ class _NoteListPageState extends State<NoteListPage> {
                   ),
                 ),
               )..then((r) {
-                if(r) {
-                  _noteListBloc.dispatch(ReturnFromNoteSaved());
-                }
+                //if(r) {
+                //  _noteListBloc.dispatch(ReturnFromNoteSaved());
+                //}
                 _noteListBloc.dispatch(GetNoteList());
               });
             },
