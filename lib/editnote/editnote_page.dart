@@ -122,7 +122,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 );
               }
 
-              // All states should ultimately display the EditNoteForm
+              // All other states should ultimately display the EditNoteForm
 
               return BlocProvider(
                 bloc: _settingsBloc,

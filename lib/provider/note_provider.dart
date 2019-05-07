@@ -70,7 +70,7 @@ class NoteProvider {
 
   Future<Note> saveNote(Note note) async {
     var db = await getDatabase();
-    int count;
+    int count = 1;
 
     print(note.note);
 
@@ -86,7 +86,7 @@ class NoteProvider {
           whereArgs: [note.id],
       );
     } else {
-      count = await db.insert(
+      int newId = await db.insert(
         "notes",
         {
           "deckId": note.deckId,
@@ -94,11 +94,11 @@ class NoteProvider {
           "note": jsonEncode(note.note),
         },
       );
-
+      note.id = newId;
     }
 
     if (count < 1) {
-      throw("Error updating or inserting note into database.");
+      throw("Error updating note.");
     }
 
     return note;
@@ -106,6 +106,7 @@ class NoteProvider {
 
   Future<void> deleteNote(Note note) async {
     var db = await getDatabase();
+    print("DELETING NOTE WITH ID: " + note.id.toString());
     await db.delete("notes", where: "id = ?", whereArgs: [note.id]);
   }
 
