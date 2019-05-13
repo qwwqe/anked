@@ -7,6 +7,9 @@ import 'package:anked/editnote/editnote.dart';
 import 'package:bloc/bloc.dart';
 import 'package:anked/model/model.dart';
 import 'package:anked/settings/settings.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:async';
+import 'dart:math';
 
 class NoteListPage extends StatefulWidget {
   final AnkiRepository ankiRepository;
@@ -25,6 +28,8 @@ class _NoteListPageState extends State<NoteListPage> {
   NoteListBloc _noteListBloc;
   List<Note> noteList;
   List<Note> filteredNoteList;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  Timer notificationTimer;
 
   AnkiRepository get _ankiRepository => widget.ankiRepository;
   NoteRepository get _noteRepository => widget.noteRepository;
@@ -38,6 +43,14 @@ class _NoteListPageState extends State<NoteListPage> {
         noteList: noteList,
     );
     _noteListBloc.dispatch(GetNoteList());
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
+    var initializationSettings = InitializationSettings(initializationSettingsAndroid, null);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
+
+    notificationTimer = Timer.periodic(Duration(hours: 1), notificationTimerCallback);
+
     super.initState();
   }
 
@@ -46,12 +59,6 @@ class _NoteListPageState extends State<NoteListPage> {
     _noteListBloc.dispose();
     super.dispose();
   }
-
-  // TODO: check if notelist will get updated properly without this
-  //@override
-  //void didUpdateWidget(Widget oldWidget) {
-  //  _noteListBloc.dispatch(GetNoteList());
-  //}
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +151,7 @@ class _NoteListPageState extends State<NoteListPage> {
                     ankiRepository: _ankiRepository,
                   ),
                 ),
-              )..then((r) {
+              ).then((r) {
                 //if(r) {
                 //  _noteListBloc.dispatch(ReturnFromNoteSaved());
                 //}
@@ -155,4 +162,60 @@ class _NoteListPageState extends State<NoteListPage> {
         ),
     );
   }
+
+  Future onSelectNotification(String noteId) async {
+    if (noteId == null) {
+      return;
+    }
+
+    debugPrint('Notification noteId: ' + noteId);
+
+    Note note;
+    for(int i = 0; i < noteList.length; i++) {
+      if(noteList[i].id == int.parse(noteId)) {
+        note = noteList[i];
+        break;
+      }
+    }
+
+    if (note == null) {
+      return;
+    }
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditNotePage(
+          noteRepository: _noteRepository,
+          ankiRepository: _ankiRepository,
+          note: note,
+        ),
+      ),
+    ).then((r) => _noteListBloc.dispatch(GetNoteList()));
+  }
+
+  void notificationTimerCallback(Timer t) async {
+      if(noteList.length > 0) {
+        await flutterLocalNotificationsPlugin.cancelAll();
+
+        var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+            'DOOBLE',
+            'DABBLE',
+            'DIBBLE',
+            importance: Importance.Max,
+            priority: Priority.High,
+        );
+
+        var platformChannelSpecifics = new NotificationDetails(
+            androidPlatformChannelSpecifics,
+            null,
+        );
+        
+        int noteIndex = Random().nextInt(noteList.length);
+        await flutterLocalNotificationsPlugin.show(
+            0, '順便輸入一下Anki', '尚待輸入: ' + noteList[noteIndex].note['fields'][0]['value'], platformChannelSpecifics,
+            payload: noteList[noteIndex].id.toString()
+        );
+      }
+    }
 }

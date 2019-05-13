@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/notelist/notelist.dart';
 import 'package:flutter/services.dart';
 import 'package:anked/settings/settings.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // TODO: CODE CLEANUP AND BUG FIXING
 // TODO: Add note filter on main page
@@ -50,6 +51,7 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     _ankiRepository.setMethodChannel(platform);
+
     super.initState();
   }
 
