@@ -21,8 +21,18 @@ class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
   @override
   Stream<EditNoteFormState> mapEventToState(EditNoteFormEvent event) async* {
     if (event is ModifyDeck) {
-      noteContext.deck = event.deck;
-      yield DeckChanged(deck: event.deck);
+      AnkiDeck deck;
+      for (int i = 0; i < noteContext.decks.length; i++) {
+        if(noteContext.decks[i].id == event.deckId) {
+          deck = noteContext.decks[i];
+          break;
+        }
+      }
+
+      if (deck != null) {
+        noteContext.deck = deck;
+        yield DeckChanged(deck: deck);
+      }
     }
 
     if (event is ModifyField) {

@@ -7,11 +7,12 @@ abstract class EditNoteFormEvent extends Equatable {
 }
 
 class ModifyDeck extends EditNoteFormEvent {
-  final AnkiDeck deck;
+  //final AnkiDeck deck;
+  final String deckId;
 
-  ModifyDeck({@required this.deck}) :
-        assert(deck != null),
-        super([deck]);
+  ModifyDeck({@required this.deckId}) :
+        assert(deckId != null),
+        super([deckId]);
 
   @override
   String toString() => "ModifyDeck";

@@ -57,7 +57,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
         }
 
         if (newDeck != null) {
-          _editNoteFormBloc.dispatch(ModifyDeck(deck: newDeck));
+          _editNoteFormBloc.dispatch(ModifyDeck(deckId: newDeck.id));
         }
 
         AnkiNoteModel newNoteModel;
@@ -99,17 +99,17 @@ class _EditNoteFormState extends State<EditNoteForm> {
           ),
           ListTile(
             title: Text("Deck"),
-            trailing: DropdownButton<AnkiDeck>(
-              value: _noteContext.deck,
+            trailing: DropdownButton<String>(
+              value: _noteContext.deck.id,
               onChanged: _editable
-                  ? (deck) {
-                _editNoteFormBloc.dispatch(ModifyDeck(deck: deck));
-                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deck.id));
+                  ? (deckId) {
+                _editNoteFormBloc.dispatch(ModifyDeck(deckId: deckId));
+                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deckId));
               }
                   : null,
               items: _noteContext.decks.map((deck) {
-                return DropdownMenuItem<AnkiDeck>(
-                  value: deck,
+                return DropdownMenuItem<String>(
+                  value: deck.id,
                   child: Text(deck.name),
                 );
               }).toList(),
