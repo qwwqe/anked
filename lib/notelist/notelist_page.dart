@@ -126,32 +126,48 @@ class _NoteListPageState extends State<NoteListPage> {
                 // TODO: figure out long press drop down menu...
                 return ListView.builder(
                   itemCount: noteList.length,
-                  itemBuilder: (BuildContext context, int index) => Card(
-                    margin: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-                    child: ListTile(
-                      title: Text(noteList[index].note['fields'][0]['value']),
-                      //subtitle: Text(noteList[index].note['fields'][2]['value']), // TODO: check array bounds...
-                      trailing: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () => _noteListBloc.dispatch(DeleteNote(note: noteList[index])),
-                      ),
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditNotePage(
-                              noteRepository: _noteRepository,
-                              ankiRepository: _ankiRepository,
-                              note: noteList[index],
+                  itemBuilder: (BuildContext context, int index) => Dismissible(
+                    key: Key(noteList[index].toString()),
+                    onDismissed: (direction) {
+                      _noteListBloc.dispatch(DeleteNote(note: noteList[index]));
+                      Scaffold.of(context)
+                          .showSnackBar(SnackBar(content: Text("Note deleted. Bet you wish there was an undo option.")));
+                    },
+                    background: Container(
+                        color: Colors.red[200],
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Icon(Icons.delete),
                             ),
-                          ),
-                        ).then((r) {
-                          //if(r) {
-                          //  _noteListBloc.dispatch(ReturnFromNoteSaved());
-                          //}
-                          _noteListBloc.dispatch(GetNoteList());
-                        });
-                      },
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(right: 15),
+                              child: Icon(Icons.delete),
+                            )
+                          ],
+                        )
+                    ),
+                    child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                        child: ListTile(
+                          title: Text(noteList[index].note['fields'][0]['value']),
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditNotePage(
+                                  noteRepository: _noteRepository,
+                                  ankiRepository: _ankiRepository,
+                                  note: noteList[index],
+                                ),
+                              ),
+                            ).then((r) {
+                              _noteListBloc.dispatch(GetNoteList());
+                            });
+                          },
+                        ),
                     ),
                   ),
                 );
