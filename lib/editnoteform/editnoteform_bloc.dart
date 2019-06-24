@@ -3,17 +3,23 @@ import 'package:anked/editnoteform/editnoteform.dart';
 import 'package:anked/repository/repository.dart';
 import 'package:anked/model/model.dart';
 import 'package:meta/meta.dart';
+import 'package:anked/editnote/editnote.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
   final NoteContext noteContext;
   final NoteRepository noteRepository;
+  final EditNoteBloc editNoteBloc;
+
+  Timer saveTimer;
 
   bool preloaded = false;
 
-  EditNoteFormBloc({@required this.noteContext, @required this.noteRepository}) :
+  EditNoteFormBloc({@required this.noteContext, @required this.noteRepository, @required this.editNoteBloc}) :
       assert(noteContext != null),
-      assert(noteRepository != null);
+      assert(noteRepository != null),
+      assert(editNoteBloc != null);
 
   @override
   EditNoteFormState get initialState => DeckChanged(deck: noteContext.deck);
@@ -32,10 +38,12 @@ class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
       if (deck != null) {
         noteContext.deck = deck;
         yield DeckChanged(deck: deck);
+        editNoteBloc.dispatch(SaveNote());
       }
     }
 
     if (event is ModifyField) {
+      _fieldUpdate(event.fieldIndex);
       yield FieldChanged(fieldIndex: event.fieldIndex, fieldValue: event.fieldValue);
     }
 
@@ -59,10 +67,17 @@ class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
       }
 
       yield NoteModelChanged(noteModel: event.noteModel);
+      editNoteBloc.dispatch(SaveNote());
     }
   }
 
-  void _fieldUpdateCallback(int i) {
+  void _fieldUpdate(int i) {
     print(noteContext.controllers[i].text);
+    if (saveTimer != null) {
+      saveTimer.cancel();
+    }
+    saveTimer = Timer(Duration(seconds: 1), () {
+      editNoteBloc.dispatch(SaveNote());
+    });
   }
 }

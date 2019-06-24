@@ -88,9 +88,9 @@ class _EditNotePageState extends State<EditNotePage> {
           }
 
           if (state is SavedNote) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text("Note saved."),
-            ));
+//            Scaffold.of(context).showSnackBar(SnackBar(
+//                content: Text("Note saved."),
+//            ));
           }
 
           if (state is SavingNoteFailed) {
@@ -124,8 +124,11 @@ class _EditNotePageState extends State<EditNotePage> {
 
               // All other states should ultimately display the EditNoteForm
 
-              return BlocProvider(
-                bloc: _settingsBloc,
+              return BlocProviderTree(
+                blocProviders: [
+                  BlocProvider<SettingsBloc>(bloc: _settingsBloc),
+                  BlocProvider<EditNoteBloc>(bloc: editNoteBloc),
+                ],
                 child: EditNoteForm(
                   noteRepository: _noteRepository,
                   noteContext: noteContext,
@@ -135,10 +138,10 @@ class _EditNotePageState extends State<EditNotePage> {
             }
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+/*      floatingActionButton: FloatingActionButton(
         onPressed: () => editNoteBloc.dispatch(SaveNote()),
         child: Icon(Icons.save),
-      ),
+      ),*/
     );
       //isNewNote ? Text("New note") : Text(_note.toString()),//BlocBuilder(),
   }

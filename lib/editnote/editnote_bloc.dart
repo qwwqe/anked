@@ -90,7 +90,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
     }
 
     if (event is SaveNote) {
-      yield SavingNote();
+      //yield SavingNote();
       try {
         print("Saving note");
         noteContext.renderNote();
@@ -98,7 +98,7 @@ class EditNoteBloc extends Bloc<EditNoteEvent, EditNoteState> {
         if (noteContext.note.id == null) {
           noteContext.note.id = note.id;
         }
-        yield SavedNote();
+        //yield SavedNote();
       } catch (error) {
         print(error.toString());
         yield SavingNoteFailed(error: error.toString());

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anked/repository/repository.dart';
 import 'package:anked/model/model.dart';
 import 'package:anked/editnoteform/editnoteform.dart';
+import 'package:anked/editnote/editnote.dart';
 import 'package:anked/settings/settings.dart';
 
 class EditNoteForm extends StatefulWidget {
@@ -28,6 +29,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
   @override
   void initState() {
     _editNoteFormBloc = EditNoteFormBloc(
+      editNoteBloc: BlocProvider.of<EditNoteBloc>(context),
       noteRepository: _noteRepository,
       noteContext: _noteContext,
     );
@@ -79,15 +81,16 @@ class _EditNoteFormState extends State<EditNoteForm> {
       bloc: _editNoteFormBloc,
       builder: (BuildContext context, EditNoteFormState state) {
         var formChildren = <Widget>[
+          // TODO: make dropdown index notemodel id
           ListTile(
             title: Text("Note Type"),
             trailing: DropdownButton<AnkiNoteModel>(
               value: _noteContext.model,
               onChanged: _editable
                   ? (noteModel) {
-                _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel));
-                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredNoteModel(noteModelId: noteModel.id));
-              }
+                    _editNoteFormBloc.dispatch(ModifyNoteModel(noteModel: noteModel));
+                    BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredNoteModel(noteModelId: noteModel.id));
+                  }
                   : null,
               items: _noteContext.models.map((noteModel) {
                 return DropdownMenuItem<AnkiNoteModel>(
@@ -136,7 +139,4 @@ class _EditNoteFormState extends State<EditNoteForm> {
       }
     ),
   );
-
-
-
 }
