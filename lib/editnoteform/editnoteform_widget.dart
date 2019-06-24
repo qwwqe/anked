@@ -80,24 +80,6 @@ class _EditNoteFormState extends State<EditNoteForm> {
       builder: (BuildContext context, EditNoteFormState state) {
         var formChildren = <Widget>[
           ListTile(
-            title: Text("Deck"),
-            trailing: DropdownButton<AnkiDeck>(
-              value: _noteContext.deck,
-              onChanged: _editable
-                  ? (deck) {
-                _editNoteFormBloc.dispatch(ModifyDeck(deck: deck));
-                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deck.id));
-              }
-                  : null,
-              items: _noteContext.decks.map((deck) {
-                return DropdownMenuItem<AnkiDeck>(
-                  value: deck,
-                  child: Text(deck.name),
-                );
-              }).toList(),
-            ),
-          ),
-          ListTile(
             title: Text("Note Type"),
             trailing: DropdownButton<AnkiNoteModel>(
               value: _noteContext.model,
@@ -111,6 +93,24 @@ class _EditNoteFormState extends State<EditNoteForm> {
                 return DropdownMenuItem<AnkiNoteModel>(
                   value: noteModel,
                   child: Text(noteModel.name),
+                );
+              }).toList(),
+            ),
+          ),
+          ListTile(
+            title: Text("Deck"),
+            trailing: DropdownButton<AnkiDeck>(
+              value: _noteContext.deck,
+              onChanged: _editable
+                  ? (deck) {
+                _editNoteFormBloc.dispatch(ModifyDeck(deck: deck));
+                BlocProvider.of<SettingsBloc>(context).dispatch(SetPreferredDeck(deckId: deck.id));
+              }
+                  : null,
+              items: _noteContext.decks.map((deck) {
+                return DropdownMenuItem<AnkiDeck>(
+                  value: deck,
+                  child: Text(deck.name),
                 );
               }).toList(),
             ),

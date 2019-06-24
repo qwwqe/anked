@@ -18,8 +18,6 @@ class NoteProvider {
             );
           }
       );
-
-      //await testPopulate(); // TODO: remove promptly
     }
 
     return _database;
