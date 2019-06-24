@@ -93,7 +93,9 @@ class _NoteListPageState extends State<NoteListPage> {
             }
 
             if (state is NoteDeleted) {
-              _noteListBloc.dispatch(GetNoteList());
+              //_noteListBloc.dispatch(GetNoteList());
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text("Note deleted. Bet you wish there was an undo option.")));
             }
 
             if (state is ReturnedFromNoteSaved) {
@@ -127,11 +129,13 @@ class _NoteListPageState extends State<NoteListPage> {
                 return ListView.builder(
                   itemCount: noteList.length,
                   itemBuilder: (BuildContext context, int index) => Dismissible(
-                    key: Key(noteList[index].toString()),
+                    key: Key(noteList[index].id.toString()),
                     onDismissed: (direction) {
-                      _noteListBloc.dispatch(DeleteNote(note: noteList[index]));
-                      Scaffold.of(context)
-                          .showSnackBar(SnackBar(content: Text("Note deleted. Bet you wish there was an undo option.")));
+                      Note note = noteList[index];
+                      _noteListBloc.dispatch(DeleteNote(note: note));
+                      setState(() {
+                        noteList.remove(note);
+                      });
                     },
                     background: Container(
                         color: Colors.red[200],
