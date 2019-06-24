@@ -65,7 +65,7 @@ class _NoteListPageState extends State<NoteListPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text("anked"),
-          actions: [
+          /*actions: [
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () async {
@@ -82,7 +82,7 @@ class _NoteListPageState extends State<NoteListPage> {
                 });
               },
             )
-          ],
+          ],*/
         ),
         body: BlocListener(
           bloc: _noteListBloc,
@@ -174,7 +174,6 @@ class _NoteListPageState extends State<NoteListPage> {
               }
           ),
         ),
-/*
         floatingActionButton: FloatingActionButton(
             onPressed: () async {
               Navigator.push(
@@ -186,15 +185,11 @@ class _NoteListPageState extends State<NoteListPage> {
                   ),
                 ),
               ).then((r) {
-                //if(r) {
-                //  _noteListBloc.dispatch(ReturnFromNoteSaved());
-                //}
                 _noteListBloc.dispatch(GetNoteList());
               });
             },
             child: Icon(Icons.add),
         ),
-*/
     );
   }
 
