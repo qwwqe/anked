@@ -65,7 +65,24 @@ class _NoteListPageState extends State<NoteListPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text("anked"),
-
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditNotePage(
+                      noteRepository: _noteRepository,
+                      ankiRepository: _ankiRepository,
+                    ),
+                  ),
+                ).then((r) {
+                  _noteListBloc.dispatch(GetNoteList());
+                });
+              },
+            )
+          ],
         ),
         body: BlocListener(
           bloc: _noteListBloc,
@@ -141,6 +158,7 @@ class _NoteListPageState extends State<NoteListPage> {
               }
           ),
         ),
+/*
         floatingActionButton: FloatingActionButton(
             onPressed: () async {
               Navigator.push(
@@ -160,6 +178,7 @@ class _NoteListPageState extends State<NoteListPage> {
             },
             child: Icon(Icons.add),
         ),
+*/
     );
   }
 
