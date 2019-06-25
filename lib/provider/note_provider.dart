@@ -69,7 +69,7 @@ class NoteProvider {
   Future<List<Note>> getAllNotes() async {
     var db = await getDatabase();
     var rows = await db.rawQuery(
-      'SELECT * FROM notes'
+      'SELECT * FROM notes WHERE deleted IS NULL'
     );
 
     print("FFFF");
@@ -127,7 +127,14 @@ class NoteProvider {
   Future<void> deleteNote(Note note) async {
     var db = await getDatabase();
     print("DELETING NOTE WITH ID: " + note.id.toString());
-    await db.delete("notes", where: "id = ?", whereArgs: [note.id]);
+    //await db.delete("notes", where: "id = ?", whereArgs: [note.id]);
+    await db.execute("UPDATE notes SET deleted = 1 WHERE id = ?", [note.id]);
+  }
+
+  Future<void> restoreNote(Note note) async {
+    var db = await getDatabase();
+    print("RESTORING NOTE WITH ID: " + note.id.toString());
+    await db.execute("UPDATE notes SET deleted = NULL WHERE id = ?", [note.id]);
   }
 
   Future<void> testPopulate() async {
