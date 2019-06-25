@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
@@ -75,6 +76,18 @@ public class MainActivity extends FlutterActivity {
                     result.success(rows);
                   }
                 }
+
+                if(call.method.equals("checkCardExistence")) {
+                  String modelId = call.argument("modelId");
+                  String deckName = call.argument("deckName");
+                  String firstFieldName = call.argument("firstFieldName");
+                  String firstFieldValue = call.argument("firstFieldValue");
+
+                  boolean exists = checkCardExistence(modelId, deckName, firstFieldName, firstFieldValue);
+
+                  Log.d("PLATFORM", "Exists? " + exists);
+                  result.success(exists);
+                }
               }
             }
     );
@@ -113,6 +126,16 @@ public class MainActivity extends FlutterActivity {
     }
 
     return models;
+  }
+
+  private boolean checkCardExistence(String modelId, String deckName, String firstFieldName, String firstFieldValue) {
+    String selection = String.format("mid:\"%s\" deck:\"%s\" \"%s\":\"%s\"", modelId, deckName, firstFieldName, firstFieldValue);
+    Cursor cursor = getContentResolver().query(FlashCardsContract.Note.CONTENT_URI_V2, null, selection, null, null);
+    if(cursor.moveToFirst()) {
+      return true;
+    }
+
+    return false;
   }
 
   private int saveNote(String modelId, String deckId, String fieldString) {
