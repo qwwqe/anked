@@ -6,17 +6,39 @@ import 'package:anked/model/model.dart';
 class NoteProvider {
   Database _database;
 
+  Future<void> _createDbV1(Database db) async {
+    await db.execute(
+        'CREATE TABLE notes (id INTEGER PRIMARY KEY, modelId TEXT, deckId TEXT, note TEXT);'
+    );
+  }
+
+  Future<void> _createDbV2(Database db) async {
+    await db.execute(
+        'CREATE TABLE notes (id INTEGER PRIMARY KEY, modelId TEXT, deckId TEXT, note TEXT, deleted INTEGER);'
+    );
+  }
+
+  Future<void> _updateDbV1toV2(Database db) async {
+    await db.execute(
+      'ALTER TABLE notes ADD deleted INTEGER'
+    );
+  }
+
   Future<Database> getDatabase() async {
     if (_database == null) {
       var dbBasePath = await getDatabasesPath();
       var dbPath = dbBasePath + "/" + "notes.db";
       print(dbPath);
-      _database = await openDatabase(dbPath, version: 1,
+      _database = await openDatabase(dbPath,
+          version: 2,
           onCreate: (Database db, int version) async {
-            await db.execute(
-                'CREATE TABLE notes (id INTEGER PRIMARY KEY, modelId TEXT, deckId TEXT, note TEXT);'
-            );
-          }
+            await _createDbV2(db);
+          },
+          onUpgrade: (Database db, int oldVersion, int newVersion) async {
+            if(oldVersion == 1) {
+              await _updateDbV1toV2(db);
+            }
+          },
       );
     }
 
