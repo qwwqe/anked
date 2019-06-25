@@ -95,7 +95,21 @@ class _NoteListPageState extends State<NoteListPage> {
             if (state is NoteDeleted) {
               //_noteListBloc.dispatch(GetNoteList());
               Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text("Note deleted. Bet you wish there was an undo option.")));
+                  .showSnackBar(SnackBar(
+                    content: Text("Note deleted."),
+                    action: SnackBarAction(
+                      label: "Undo",
+                      onPressed: () {
+                        _noteListBloc.dispatch(RestoreNote(note: state.note));
+                      },
+                    ),
+              ));
+            }
+
+            if (state is NoteRestored) {
+              _noteListBloc.dispatch(GetNoteList());
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text("Note restored.")));
             }
 
             if (state is ReturnedFromNoteSaved) {

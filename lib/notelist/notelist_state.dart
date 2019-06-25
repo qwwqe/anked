@@ -44,9 +44,23 @@ class DeletingNote extends NoteListState {
   String toString() => "DeletingNote";
 }
 
+class RestoringNote extends NoteListState {
+  @override
+  String toString() => "RestoringNote";
+}
+
 class NoteDeleted extends NoteListState {
+  final Note note;
+
+  NoteDeleted({@required this.note}) : super([note]);
+
   @override
   String toString() => "DeletedNote";
+}
+
+class NoteRestored extends NoteListState {
+  @override
+  String toString() => "NoteRestored";
 }
 
 class NoteDeletionFailure extends NoteListState {
@@ -55,7 +69,16 @@ class NoteDeletionFailure extends NoteListState {
   NoteDeletionFailure({@required this.error}) : super([error]);
 
   @override
-  String toString() => "NoteDelitionFailure";
+  String toString() => "NoteDeletionFailure";
+}
+
+class NoteRestorationFailure extends NoteListState {
+  final String error;
+
+  NoteRestorationFailure({@required this.error}) : super([error]);
+
+  @override
+  String toString() => "NoteRestorationFailure";
 }
 
 class ReturnedFromNoteSaved extends NoteListState {

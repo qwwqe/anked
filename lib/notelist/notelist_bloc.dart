@@ -42,9 +42,21 @@ class NoteListBloc extends Bloc<NoteListEvent, NoteListState> {
 
       try {
         await noteRepository.deleteNote(event.note);
-        yield NoteDeleted();
+        print(event.note.id.toString());
+        yield NoteDeleted(note: event.note);
       } catch(error) {
         yield NoteDeletionFailure(error: error.toString());
+      }
+    }
+
+    if(event is RestoreNote) {
+      yield RestoringNote();
+
+      try {
+        await noteRepository.restoreNote(event.note);
+        yield NoteRestored();
+      } catch(error) {
+        yield NoteRestorationFailure(error: error.toString());
       }
     }
 
