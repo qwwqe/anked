@@ -31,8 +31,9 @@ class NoteModelChanged extends EditNoteFormState {
 class FieldChanged extends EditNoteFormState {
   final int fieldIndex;
   final String fieldValue;
+  final bool exists;
 
-  FieldChanged({@required this.fieldIndex, @required this.fieldValue}) :
+  FieldChanged({@required this.fieldIndex, @required this.fieldValue, this.exists = false}) :
       assert(fieldValue != null),
       assert(fieldIndex != null),
       super([fieldIndex, fieldValue]);

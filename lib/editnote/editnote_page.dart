@@ -130,6 +130,7 @@ class _EditNotePageState extends State<EditNotePage> {
                   BlocProvider<EditNoteBloc>(bloc: editNoteBloc),
                 ],
                 child: EditNoteForm(
+                  ankiRepository: _ankiRepository,
                   noteRepository: _noteRepository,
                   noteContext: noteContext,
                   editable: !(state is SendingNote || state is SavingNote),

@@ -29,4 +29,8 @@ class AnkiRepository {
   Future<int> addNote(AnkiNote note) async {
     return await ankiProvider.addNote(note);
   }
+
+  Future<bool> checkCardExistence(String modelId, String firstFieldName, String firstFieldValue) async {
+    return await ankiProvider.checkCardExistence(modelId, firstFieldName, firstFieldValue);
+  }
 }

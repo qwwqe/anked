@@ -51,4 +51,12 @@ class AnkiProvider {
       "fieldString": note.fieldString,
     });
   }
+
+  Future<bool> checkCardExistence(String modelId, String firstFieldName, String firstFieldValue) async {
+    return await _platform.invokeMethod('checkCardExistence', {
+      "modelId": modelId,
+      "firstFieldName": firstFieldName,
+      "firstFieldValue": firstFieldValue,
+    });
+  }
 }

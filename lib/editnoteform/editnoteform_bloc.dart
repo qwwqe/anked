@@ -10,15 +10,17 @@ import 'dart:async';
 class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
   final NoteContext noteContext;
   final NoteRepository noteRepository;
+  final AnkiRepository ankiRepository;
   final EditNoteBloc editNoteBloc;
 
   Timer saveTimer;
 
   bool preloaded = false;
 
-  EditNoteFormBloc({@required this.noteContext, @required this.noteRepository, @required this.editNoteBloc}) :
+  EditNoteFormBloc({@required this.noteContext, @required this.noteRepository, @required this.ankiRepository, @required this.editNoteBloc}) :
       assert(noteContext != null),
       assert(noteRepository != null),
+      assert(ankiRepository != null),
       assert(editNoteBloc != null);
 
   @override
@@ -44,7 +46,11 @@ class EditNoteFormBloc extends Bloc<EditNoteFormEvent, EditNoteFormState> {
 
     if (event is ModifyField) {
       _fieldUpdate(event.fieldIndex);
-      yield FieldChanged(fieldIndex: event.fieldIndex, fieldValue: event.fieldValue);
+      bool exists = false;
+      if(event.fieldIndex == 0) {
+        exists = await ankiRepository.checkCardExistence(noteContext.model.id, noteContext.model.fields[0], event.fieldValue);
+      }
+      yield FieldChanged(fieldIndex: event.fieldIndex, fieldValue: event.fieldValue, exists: exists);
     }
 
     if (event is ModifyNoteModel) {

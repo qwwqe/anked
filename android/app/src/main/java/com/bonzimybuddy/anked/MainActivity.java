@@ -79,11 +79,10 @@ public class MainActivity extends FlutterActivity {
 
                 if(call.method.equals("checkCardExistence")) {
                   String modelId = call.argument("modelId");
-                  String deckName = call.argument("deckName");
                   String firstFieldName = call.argument("firstFieldName");
                   String firstFieldValue = call.argument("firstFieldValue");
 
-                  boolean exists = checkCardExistence(modelId, deckName, firstFieldName, firstFieldValue);
+                  boolean exists = checkCardExistence(modelId, firstFieldName, firstFieldValue);
 
                   Log.d("PLATFORM", "Exists? " + exists);
                   result.success(exists);
@@ -128,10 +127,10 @@ public class MainActivity extends FlutterActivity {
     return models;
   }
 
-  private boolean checkCardExistence(String modelId, String deckName, String firstFieldName, String firstFieldValue) {
-    String selection = String.format("mid:\"%s\" deck:\"%s\" \"%s\":\"%s\"", modelId, deckName, firstFieldName, firstFieldValue);
-    Cursor cursor = getContentResolver().query(FlashCardsContract.Note.CONTENT_URI_V2, null, selection, null, null);
-    if(cursor.moveToFirst()) {
+  private boolean checkCardExistence(String modelId, String firstFieldName, String firstFieldValue) {
+    String selection = String.format("mid:\"%s\" \"%s\":\"%s\"", modelId, firstFieldName, firstFieldValue);
+    Cursor cursor = getContentResolver().query(FlashCardsContract.Note.CONTENT_URI, null, selection, null, null);
+    if(cursor != null) {
       return true;
     }
 
