@@ -144,6 +144,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
             padding: EdgeInsets.symmetric(horizontal: 7, vertical: 0),
             child: TextField(
               enabled: _editable,
+              maxLines: null,
               decoration: InputDecoration(
                   labelText: _noteContext.model.fields[i],
                   labelStyle: TextStyle(backgroundColor: Colors.transparent),
